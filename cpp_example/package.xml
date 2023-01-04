@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>cpp_example</name>
+  <version>0.0.0</version>
+  <description>
+    Demonstration of basic C++ concepts
+  </description>
+  <maintainer email="mtradovn@oakland.edu">Micho Radovnikovich</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+</package>
