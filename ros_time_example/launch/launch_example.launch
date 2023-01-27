@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node pkg="ros_time_example" type="time_stamp_example" name="time_stamp_example" output="screen" />
+
+    <node pkg="ros_time_example" type="timer_example.py" name="timer_example" output="screen">
+    </node>
+
+</launch>
