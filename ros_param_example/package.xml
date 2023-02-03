@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ros_param_example</name>
+  <version>0.0.0</version>
+  <description>
+    Nodes to introduce ROS parameters
+  </description>
+  <maintainer email="mtradovn@oakland.edu">Micho Radovnikovich</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>dynamic_reconfigure</depend>
+
+</package>
