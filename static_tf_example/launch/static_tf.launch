@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="frame1_to_frame2" args="0 2 0 2.0 0 0 frame1 frame2" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="frame2_to_frame3" args="3 0 0 0 0 0 frame2 frame3" />
+
+    <node pkg="rviz" type="rviz" name="rviz_example" args="-d $(find static_tf_example)/rviz/rviz_config.rviz" />
+
+</launch>

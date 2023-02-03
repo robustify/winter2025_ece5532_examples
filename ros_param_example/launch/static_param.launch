@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+
+    <param name="p1" value="45.0" />
+    <param name="p3" value="12.0" />
+    
+    <node pkg="ros_param_example" type="static_param_example" name="static_param_example" output="screen">
+        <param name="p2" value="99.0" />    
+    </node>
+
+</launch>

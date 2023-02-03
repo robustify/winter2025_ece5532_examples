@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <rosparam file="$(find ros_param_example)/yaml/param_values.yaml" />
+    <node pkg="ros_param_example" type="static_param_example" name="static_param_example" output="screen">
+        
+    </node>
+
+</launch>
