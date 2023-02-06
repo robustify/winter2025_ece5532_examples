@@ -10,7 +10,10 @@ double N(double lat) {
 
 Eigen::Vector3d computeEcef(double lat, double lon, double alt) {
   Eigen::Vector3d output;
-  // TODO: Implement ECEF conversion calculations here
+  double n_val = N(lat);
+  output.x() = (n_val + alt) * cos(lat) * cos(lon);
+  output.y() = (n_val + alt) * cos(lat) * sin(lon);
+  output.z() = (n_val * (1 - E2) + alt) * sin(lat);
   return output;
 }
 
@@ -26,30 +29,36 @@ int main(int argc, char** argv)
 
   Eigen::Vector3d ref_ecef;
   Eigen::Vector3d current_ecef;
-  // TODO: Populate ECEF vectors by calling computeEcef
+  ref_ecef = computeEcef(ref_lat, ref_lon, ref_alt);
+  current_ecef = computeEcef(current_lat, current_lon, current_alt);
 
   std::cout << std::fixed << "Reference ECEF coordinates:\n" << ref_ecef << "\n\n";
   std::cout << std::fixed << "Current ECEF coordinates:\n" << current_ecef << "\n\n";
 
   Eigen::Matrix3d enu_rot_mat;
-  // TODO: Fill in ENU rotation matrix using reference geodetic coordinates
+  enu_rot_mat << -sin(ref_lon),                 cos(ref_lon),                0,
+                 -sin(ref_lat) * cos(ref_lon), -sin(ref_lat) * sin(ref_lon), cos(ref_lat),
+                  cos(ref_lat) * cos(ref_lon),  cos(ref_lat) * sin(ref_lon), sin(ref_lat);
 
   Eigen::Vector3d current_enu;
-  // TODO: Calculate current ENU coordinates using above calculated values
+  current_enu = enu_rot_mat * (current_ecef - ref_ecef);
 
   std::cout << "Current ENU coordinates:\n" << current_enu << "\n\n";
 
   Eigen::Vector3d ref_utm;
   Eigen::Vector3d current_utm;
   std::string utm_zone;
-  // TODO: Compute UTM coordinates of reference point and current position
+  gps_common::LLtoUTM(ref_lat * 180.0 / M_PI, ref_lon * 180.0 / M_PI, ref_utm.y(), ref_utm.x(), utm_zone);
+  gps_common::LLtoUTM(current_lat * 180.0 / M_PI, current_lon * 180.0 / M_PI, current_utm.y(), current_utm.x(), utm_zone);
+  ref_utm.z() = ref_alt;
+  current_utm.z() = current_alt;
 
   std::cout << "UTM zone: " << utm_zone << "\n";
   std::cout << std::fixed << "Reference UTM coordinates:\n" << ref_utm << "\n\n";
   std::cout << std::fixed << "Current UTM coordinates:\n" << current_utm << "\n\n";
 
   Eigen::Vector3d relative_utm;
-  // TODO: Calculate relative position of the current position from the reference point in UTM
+  relative_utm = current_utm - ref_utm;
   std::cout << std::fixed << "Relative UTM position:\n" << relative_utm << "\n\n";
 
   // Calculate distance between current and reference point using both ENU and UTM
@@ -61,6 +70,6 @@ int main(int argc, char** argv)
 
   double zone_17_lon = -81.0 * M_PI / 180.0;
   double conv_angle = atan(tan(current_lon - zone_17_lon) * sin(current_lat));
-  std::cout << "Theoretical convergence angle: " << conv_angle << "\n";//* 180.0 / M_PI << "\n";
+  std::cout << "Theoretical convergence angle: " << conv_angle * 180.0 / M_PI << "\n";
 
 }

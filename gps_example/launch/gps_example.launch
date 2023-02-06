@@ -5,8 +5,16 @@
     <arg name="ref_lat" default="12.3456" />
     <arg name="ref_lon" default="23.4567" />
 
-    <node unless="$(arg python)" pkg="gps_example" type="gps_example" name="gps_example" output="screen" />
-    <node if    ="$(arg python)" pkg="gps_example" type="gps_example.py" name="gps_example" output="screen" />
+    <node unless="$(arg python)" pkg="gps_example" type="gps_example" name="gps_example" output="screen">
+        <param name="ref_lat" value="$(arg ref_lat)" />
+        <param name="ref_lon" value="$(arg ref_lon)" />
+    </node>
+    <node if    ="$(arg python)" pkg="gps_example" type="gps_example.py" name="gps_example" output="screen">
+        <param name="ref_lat" value="$(arg ref_lat)" />
+        <param name="ref_lon" value="$(arg ref_lon)" />
+    </node>
+
+    <node pkg="rviz" type="rviz" name="gps_example_viz" args="-d $(find gps_example)/rviz/gps_example.rviz" />
 
     <!-- This starts the Gazebo simulation -->
     <param name="use_sim_time" value="true" />
