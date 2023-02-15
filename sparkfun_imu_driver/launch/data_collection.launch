@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="usb_cam" type="usb_cam_node" name="camera_node" />
+
+  <node pkg="sparkfun_imu_driver" type="driver_node.py" name="imu_driver" output="screen" />
+
+</launch>
