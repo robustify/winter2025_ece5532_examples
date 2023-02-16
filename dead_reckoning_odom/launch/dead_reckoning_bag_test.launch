@@ -4,7 +4,8 @@
   <param name="use_sim_time" value="true" />
 
   <node pkg="dead_reckoning_odom" type="dead_reckoning_odom" name="dead_reckoning_odom">
-    <!-- TODO: Set parameters and remap topics -->
+    <param name="parent_frame" value="world" />
+    <param name="initial_psi" value="-1.5707" />
   </node>
 
   <node pkg="gps_example" type="gps_example" name="gps_example" output="screen">

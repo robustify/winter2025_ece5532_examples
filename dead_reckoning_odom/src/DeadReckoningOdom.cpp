@@ -6,7 +6,12 @@ namespace dead_reckoning_odom {
 
   // Constructor with global and private node handle arguments
   DeadReckoningOdom::DeadReckoningOdom(ros::NodeHandle n, ros::NodeHandle pn) {
-    // TODO: Load frame IDs and initial state values from ROS parameters
+    // Load frame IDs and initial state values from ROS parameters
+    pn.param("parent_frame", parent_frame, std::string("odom"));
+    pn.param("child_frame", child_frame, std::string("base_footprint"));
+    pn.param("initial_x", x, 0.0);
+    pn.param("initial_y", y, 0.0);
+    pn.param("initial_psi", psi, 0.0);
 
     sample_time = 0.02;
     sub_twist = n.subscribe("twist", 1, &DeadReckoningOdom::recvTwist, this);
@@ -15,7 +20,11 @@ namespace dead_reckoning_odom {
 
   void DeadReckoningOdom::timerCallback(const ros::TimerEvent& event) {
     // TODO: Integrate discrete vehicle navigation state space model one step with the latest speed and yaw rate data
-
+    double v = twist_data.twist.linear.x;
+    double pdot = twist_data.twist.angular.z;
+    x += sample_time * v * cos(psi);
+    y += sample_time * v * sin(psi);
+    psi += sample_time * pdot;
 
     // Copy dead reckoning estimate into transform message
     geometry_msgs::TransformStamped transform_msg;

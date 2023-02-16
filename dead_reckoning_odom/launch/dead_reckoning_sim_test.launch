@@ -5,7 +5,8 @@
   <arg name="ref_lon" default="23.4567" />
 
   <node pkg="dead_reckoning_odom" type="dead_reckoning_odom" name="dead_reckoning_odom" output="screen">
-    <!-- TODO: Set parameters and remap topics -->
+    <param name="parent_frame" value="world" />
+    <remap from="twist" to="roundbot/twist" />
   </node>
 
   <node pkg="gps_example" type="gps_example" name="gps_example" output="screen">
