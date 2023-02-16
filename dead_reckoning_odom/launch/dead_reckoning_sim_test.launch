@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="ref_lat" default="12.3456" />
+  <arg name="ref_lon" default="23.4567" />
+
+  <node pkg="dead_reckoning_odom" type="dead_reckoning_odom" name="dead_reckoning_odom" output="screen">
+    <!-- TODO: Set parameters and remap topics -->
+  </node>
+
+  <node pkg="gps_example" type="gps_example" name="gps_example" output="screen">
+    <param name="ref_lat" value="$(arg ref_lat)" />
+    <param name="ref_lon" value="$(arg ref_lon)" />
+    <remap from="audibot/gps/fix" to="roundbot/gps/fix" />
+  </node>
+  
+  <node pkg="rviz" type="rviz" name="bag_viz" args="-d $(find dead_reckoning_odom)/rviz/rviz_config.rviz" />
+
+  <!-- This starts the Gazebo simulation -->
+  <param name="/use_sim_time" value="true" />
+  <group ns="roundbot">
+    <node pkg="roundbot_twist_controller" type="roundbot_twist_control" name="roundbot_twist_control" output="screen" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="state_publisher">
+      <param name="publish_frequency" type="double" value="1000.0" />
+    </node>
+  </group>
+  <node pkg="ugv_lecture_gazebo" type="robust_gazebo_launch.py" name="gazebo_launch" output="screen">
+    <param name="launch_cmd" value="$(find ugv_lecture_gazebo)/launch/gazebo_world.launch world_name:=$(find ugv_lecture_gazebo)/worlds/empty_world.world use_camera_control:=true headless:=false" />
+  </node>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find dead_reckoning_odom)/urdf/roundbot_gps_sim.urdf.xacro' pub_tf:=true ref_lat:=$(arg ref_lat) ref_lon:=$(arg ref_lon) gps_rate:=10.0 use_sensors:=false gps:=false ground_truth:=false robot_name:=roundbot" />
+  <node pkg="gazebo_ros" type="spawn_model"  name="spawn_roundbot" args="-urdf -param robot_description -model roundbot -x 0 -y 0 -z 0 -Y 0"/>
+
+</launch>

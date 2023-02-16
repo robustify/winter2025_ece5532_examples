@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="use_sim_time" value="true" />
+
+  <node pkg="dead_reckoning_odom" type="dead_reckoning_odom" name="dead_reckoning_odom">
+    <!-- TODO: Set parameters and remap topics -->
+  </node>
+
+  <node pkg="gps_example" type="gps_example" name="gps_example" output="screen">
+    <param name="ref_lat" value="42.6794081" />
+    <param name="ref_lon" value="-83.1956015" />
+    <remap from="audibot/gps/fix" to="gps_fix" />
+  </node>
+
+  <node pkg="rviz" type="rviz" name="bag_viz" args="-d $(find dead_reckoning_odom)/rviz/rviz_config.rviz" />
+
+  <node pkg="image_view" type="image_view" name="image_view">
+    <param name="image_transport" value="compressed" />
+  </node>
+
+</launch>
