@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="ground_truth_mode" default="false" />
+  <include file="$(find ugv_lecture_gazebo)/launch/spawn_gazebo_robot.launch">
+    <arg name="robot_type" value="roundbot" />
+    <arg name="description_pkg" value="$(find roundbot_description)" />
+    <arg name="start_x" value="0.0" />
+    <arg name="start_y" value="0.0" />
+    <arg name="gps" value="false" />
+    <arg name="ground_truth_mode" value="$(arg ground_truth_mode)" />
+    <arg name="use_sensors" value="true" />
+  </include>
+
+  <param name="/use_sim_time" value="true" />
+  <node pkg="ugv_lecture_gazebo" type="robust_gazebo_launch.py" name="gazebo_launch" output="screen">
+    <param name="launch_cmd" value="$(find ugv_lecture_gazebo)/launch/gazebo_world.launch world_name:=$(find ugv_lecture_gazebo)/worlds/maze_world.world" />
+  </node>
+</launch>
