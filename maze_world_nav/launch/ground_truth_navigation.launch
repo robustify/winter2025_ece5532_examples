@@ -11,8 +11,10 @@
     <rosparam file="$(find maze_world_nav)/yaml/global_planner_params.yaml" ns="NavfnROS" />
     <rosparam file="$(find maze_world_nav)/yaml/global_costmap_params.yaml" ns="global_costmap" />
     <rosparam file="$(find maze_world_nav)/yaml/local_costmap_params.yaml" ns="local_costmap" />
-
+    <rosparam file="$(find maze_world_nav)/yaml/local_planner_params.yaml" ns="RoundbotLocalPlanner" />
     <remap from="cmd_vel" to="/roundbot/cmd_vel" />
+
+    <param name="base_local_planner" value="roundbot_local_planner/RoundbotLocalPlanner" />
   </node>
 
   <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_map" args="0 0 0 0 0 0 world map" />

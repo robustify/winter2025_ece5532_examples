@@ -57,9 +57,9 @@ bool RoundbotLocalPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel
   double plan_resolution = 0.5 * costmap_->getCostmap()->getResolution();
 
   /****** Calculate speed command ******/
-  // TODO: Calculate a plan point array index to roughly match the specified distance in front of the vehicle
+  // Calculate a plan point array index to roughly match the specified distance in front of the vehicle
   // This index is the lookahead target point for speed and steering control.
-  int lookahead_idx = closest_idx;
+  int lookahead_idx = std::min(closest_idx + (int)(lookahead_distance / plan_resolution), (int)plan_.size() - 1);
 
   // Compute relative position from vehicle to lookahead point, and compute heading error in a similar fasion
   // to the recommened approach for the GPS simulation project
@@ -70,36 +70,48 @@ bool RoundbotLocalPlanner::computeVelocityCommands(geometry_msgs::Twist& cmd_vel
   tf2::Matrix3x3(base_pose_tf.getRotation()).getEulerYPR(heading_angle, pitch, roll);
   double heading_error = angles::shortest_angular_distance(heading_angle, goal_angle);
 
-  // TODO: Multiplicative scale factor for speed based on heading error.
+  // Multiplicative scale factor for speed based on heading error.
   //  - If heading error is greater than 45 degrees, stop completely
   //  - If heading error is less than 30 degrees, go full speed
   //  - Linear interpolation between 30 and 45 degrees of error
   double speed_scale_factor = 1.0;
+  if (std::abs(heading_error) > M_PI/3) {
+    speed_scale_factor = 0.0;
+  } else if (std::abs(heading_error) > M_PI/6) {
+    speed_scale_factor = 1.0 - (std::abs(heading_error) - M_PI/6) / (M_PI/3 - M_PI/6);
+  }
   cmd_vel.linear.x = target_speed * speed_scale_factor;
   /**********/
 
   /****** Calculate yaw rate command ******/
-  // TODO: Project target point from global frame into vehicle local frame
+  // Project target point from global frame into vehicle local frame
   tf2::Vector3 tf_plan_point(plan_[lookahead_idx].pose.position.x, plan_[lookahead_idx].pose.position.y, 0);
+  tf_plan_point = base_pose_tf.inverse() * tf_plan_point;
 
-  // TODO: Compute a turning radius such that the vehicle hits the target point
-  double radius = 1e6;
+  // Compute a turning radius such that the vehicle hits the target point
+  double radius;
+  
+  if (std::abs(tf_plan_point.y()) > 1e-3) {
+    radius = 0.5 * (tf_plan_point.x() * tf_plan_point.x() + tf_plan_point.y() * tf_plan_point.y()) / tf_plan_point.y();
+  } else {
+    radius = 1e8;
+  }
 
   // Use the target speed and computed radius to compute a yaw rate command
   cmd_vel.angular.z = target_speed / radius;
   /**********/
 
   /****** Detect imminent collision and stop ******/
-  // TODO: Project the plan index forward 1 meter to check if a collision is imminent
-  int collision_check_idx = closest_idx;
+  // Project the plan index forward 1 meter to check if a collision is imminent
+  int collision_check_idx = std::min(closest_idx + (int)(1.0 / plan_resolution), (int)plan_.size() - 1);
   if (!checkCost(closest_idx, collision_check_idx)) {
     cmd_vel.linear.x = 0;
   }
   /**********/
 
   /****** Detect upcoming obstruction and request a new plan from global planner ******/
-  // TODO: Calculate a plan point array index to roughly match the replan distance
-  int replan_idx = closest_idx;
+  // Calculate a plan point array index to roughly match the replan distance
+  int replan_idx = std::min(closest_idx + (int)(replan_distance / plan_resolution), (int)plan_.size() - 1);
   bool new_plan_required = !checkCost(closest_idx, replan_idx);
   /**********/
 
