@@ -1,0 +1,7 @@
+<library path="lib/libroundbot_local_planner">
+    <class name="roundbot_local_planner/RoundbotLocalPlanner" type="roundbot_local_planner::RoundbotLocalPlanner" base_class_type="nav_core::BaseLocalPlanner">
+    <description>
+      A differential drive local planner that explicitly follows the path given to it by the global planner.
+    </description>
+  </class>
+</library>

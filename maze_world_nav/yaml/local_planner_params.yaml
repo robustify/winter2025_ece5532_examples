@@ -1,0 +1,6 @@
+lookahead_distance: 1.0   # How far ahead to select a steering control target point from the global plan
+target_speed: 1.0         # Maximum speed of the robot
+replan_distance: 3.0      # Request a new plan from the global planner if the plan goes through an obstacle
+                          #   this far in front of the vehicle
+
+goal_dist_tolerance: 0.5  # Distance threshold for determining whether the goal point was reached
