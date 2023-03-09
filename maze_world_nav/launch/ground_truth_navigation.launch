@@ -11,7 +11,11 @@
     <rosparam file="$(find maze_world_nav)/yaml/global_planner_params.yaml" ns="NavfnROS" />
     <rosparam file="$(find maze_world_nav)/yaml/global_costmap_params.yaml" ns="global_costmap" />
     <rosparam file="$(find maze_world_nav)/yaml/local_costmap_params.yaml" ns="local_costmap" />
+
+    <remap from="cmd_vel" to="/roundbot/cmd_vel" />
   </node>
+
+  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_map" args="0 0 0 0 0 0 world map" />
 
   <!-- Differential drive kinematics node to convert speed and yaw rate into wheel speed commands -->
   <node ns="roundbot" pkg="roundbot_twist_controller" type="roundbot_twist_control" name="twist_control" output="screen" />
