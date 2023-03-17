@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Use time from bag file -->
+  <param name="use_sim_time" value="true" />
+
+  <!-- Hector mapping node -->
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    <rosparam file="$(find real_slam_example)/yaml/hector_params.yaml" />
+    <remap from="scan" to="/laser_birdcage_r2000/scan" />
+  </node>
+
+  <node pkg="dead_reckoning_odom" type="dead_reckoning_odom" name="dead_reckoning_odom">
+    <param name="parent_frame" value="odom" />
+    <param name="child_frame" value="base_footprint" />
+    <remap from="twist" to="/mobility_base/twist" />
+  </node>
+
+  <!-- Launch Rviz -->
+  <node pkg="rviz" type="rviz" name="rviz" respawn="true" args="-d $(find real_slam_example)/rviz/hector_config.rviz" />
+
+  <!-- Transform from footprint to laser frame -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="base_to_laser" args="0 0 0.25 0 0 0 base_footprint laser_birdcage_r2000" />
+
+</launch>
