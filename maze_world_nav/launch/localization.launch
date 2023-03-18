@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="static_map" default="false" />
+
+    <group if="$(arg static_map)">
+        <node pkg="amcl" type="amcl" name="amcl" output="screen">
+            <rosparam file="$(find maze_world_nav)/yaml/amcl_params.yaml" />
+            <remap from="scan" to="/roundbot/laser_front/scan" />
+        </node>
+
+        <node pkg="map_server" type="map_server" name="map_server" output="screen" args="$(find maze_world_nav)/map.yaml" />
+    </group>
+
+    <group unless="$(arg static_map)">
+        <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+            <rosparam file="$(find maze_world_nav)/yaml/hector_params.yaml" />
+
+            <remap from="scan" to="/roundbot/laser_front/scan" />
+        </node>
+    </group>
+
+    <node pkg="dead_reckoning_odom" type="dead_reckoning_odom" name="dead_reckoning_odom" output="screen">
+        <remap from="twist" to="/roundbot/twist" />
+    </node>
+
+</launch>

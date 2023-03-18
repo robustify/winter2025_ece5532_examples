@@ -1,0 +1,10 @@
+odom_frame_id: odom
+base_frame_id: base_footprint
+global_frame_id: map
+
+update_min_d: 0.2
+update_min_a: 0.5
+use_map_topic: true
+
+min_particles: 100
+max_particles: 5000
