@@ -7,7 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
         - /Grid1
-        - /Raw LIDAR Scan1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 1006
   - Class: rviz/Selection
@@ -67,15 +67,17 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_footprint:
           Value: true
         laser_birdcage_r2000:
-          Value: true
+          Value: false
         map:
           Value: true
         odom:
           Value: true
+        scanmatcher_frame:
+          Value: false
       Marker Alpha: 1
       Marker Scale: 3
       Name: TF
@@ -88,6 +90,8 @@ Visualization Manager:
             base_footprint:
               laser_birdcage_r2000:
                 {}
+          scanmatcher_frame:
+            {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -99,7 +103,7 @@ Visualization Manager:
       Axis: Z
       Channel Name: intensity
       Class: rviz/LaserScan
-      Color: 32; 74; 135
+      Color: 255; 0; 255
       Color Transformer: FlatColor
       Decay Time: 0
       Enabled: true
@@ -155,10 +159,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 66.6252212524414
+      Scale: 40.76089096069336
       Target Frame: <Fixed Frame>
-      X: 2.830580711364746
-      Y: -4.043060302734375
+      X: 0.8541733026504517
+      Y: -0.25556251406669617
     Saved: ~
 Window Geometry:
   Displays:
