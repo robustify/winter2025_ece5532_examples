@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mantis_model</name>
+  <version>0.0.0</version>
+  <description>
+    Example URDF model, robot simulation plugin, and launch files for loading a robot model into Gazebo and ROS
+  </description>
+  <maintainer email="mtradovn@oakland.edu">Micho Radovnikovich</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>gazebo_ros</depend>
+  <depend>tf2_ros</depend>
+  <depend>dynamic_reconfigure</depend>
+
+</package>

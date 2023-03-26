@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Robot state publisher -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+
+    <!-- Parse the URDF model and store the result in the 'robot_description' parameter -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find mantis_model)/urdf/mantis.urdf'" />
+
+    <!-- Spawn the model in Gazebo -->
+    <node pkg="gazebo_ros" type="spawn_model" name="robot_spawner" args="-urdf -param robot_description -model mantis" />
+
+
+</launch>
