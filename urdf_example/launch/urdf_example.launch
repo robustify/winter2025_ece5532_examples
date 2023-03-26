@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- TODO: Parse the URDF file and load it into the '/robot_description' ROS parameter -->
+
+  <!-- TODO: Run the robot_state_publisher node that takes the description parameter and manages all the TF frames -->
+
+  <!-- TODO: Run the custom node that publishes the joint angles of the robot to inform the robot_state_publisher -->
+
+</launch>

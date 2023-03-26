@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>urdf_example</name>
+  <version>0.0.0</version>
+  <description>
+    Example URDF model, joint state publisher node, and launch file for loading a URDF model.
+  </description>
+  <maintainer email="mtradovn@oakland.edu">Micho Radovnikovich</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+
+</package>
