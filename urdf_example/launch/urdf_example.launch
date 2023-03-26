@@ -2,10 +2,13 @@
 
 <launch>
 
-  <!-- TODO: Parse the URDF file and load it into the '/robot_description' ROS parameter -->
+  <!-- Parse the URDF file and load it into the '/robot_description' ROS parameter -->
+  <param name="robot_description" command="$(find xacro)/xacro '$(find urdf_example)/urdf/example.urdf'" />
 
-  <!-- TODO: Run the robot_state_publisher node that takes the description parameter and manages all the TF frames -->
+  <!-- Run the robot_state_publisher node that takes the description parameter and manages all the TF frames -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
 
-  <!-- TODO: Run the custom node that publishes the joint angles of the robot to inform the robot_state_publisher -->
+  <!-- Run the custom node that publishes the joint angles of the robot to inform the robot_state_publisher -->
+  <node pkg="urdf_example" type="example_joint_publisher.py" name="joint_publisher" />
 
 </launch>
