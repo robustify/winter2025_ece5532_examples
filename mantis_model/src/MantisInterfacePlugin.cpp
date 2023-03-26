@@ -38,7 +38,6 @@ void MantisInterfacePlugin::reconfig(mantis_model::MantisPluginConfig& config, u
 }
 
 void MantisInterfacePlugin::OnUpdate(const common::UpdateInfo& info) {
-  ros::Time current_ros_time = ros::Time::now();
   double current_gazebo_update_time = info.simTime.Double();
   double dt = current_gazebo_update_time - last_gazebo_update_time_;
   last_gazebo_update_time_ = current_gazebo_update_time;
