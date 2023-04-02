@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <node pkg="opencv_example" type="hough_transform_node" name="hough_transform_node" output="screen" />
+
+  <!-- Decompress image from bag file -->
+  <node pkg="image_transport" type="republish" name="republish" args="in:=/image compressed out:=/raw_image" />
+</launch>
