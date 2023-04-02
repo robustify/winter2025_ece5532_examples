@@ -30,26 +30,29 @@ void HoughTransform::recvImage(const sensor_msgs::ImageConstPtr& msg)
   std::vector<cv::Mat> split_images;
   cv::split(raw_img, split_images);
 
-  // TODO: Extract the blue channel into its own grayscale image
-  cv::Mat blue_image;
+  // Extract the blue channel into its own grayscale image
+  cv::Mat blue_image = split_images[0];
 
   cv::imshow("Blue Image", blue_image);
   cv::waitKey(1);
 
-  // TODO: Apply binary threshold to create a binary image where white pixels correspond to high blue values
+  // Apply binary threshold to create a binary image where white pixels correspond to high blue values
   cv::Mat thres_img;
+  cv::threshold(blue_image, thres_img, cfg_.blue_thres, 255, cv::THRESH_BINARY);
 
   cv::imshow("Thres Image", thres_img);
   cv::waitKey(1);
 
-  // TODO: Apply erosion to clean up noise
+  // Apply erosion to clean up noise
   cv::Mat erode_img;
+  cv::erode(thres_img, erode_img, cv::Mat::ones(cfg_.erode_size, cfg_.erode_size, CV_8U));
 
   cv::imshow("Erode Image", erode_img);
   cv::waitKey(1);
 
-  // TODO: Apply dilation to expand regions that passed the erosion filter
+  // Apply dilation to expand regions that passed the erosion filter
   cv::Mat dilate_img;
+  cv::dilate(erode_img, dilate_img, cv::Mat::ones(cfg_.dilate_size, cfg_.dilate_size, CV_8U));
 
   cv::imshow("Dilate Image", dilate_img);
   cv::waitKey(1);
@@ -61,6 +64,8 @@ void HoughTransform::recvImage(const sensor_msgs::ImageConstPtr& msg)
 
   // TODO: Run Probabilistic Hough Transform algorithm to detect line segments
   std::vector<cv::Vec4i> line_segments;
+  cv::HoughLinesP(canny_img, line_segments, cfg_.hough_rho_res, cfg_.hough_theta_res,
+                  cfg_.hough_threshold, cfg_.hough_min_length, cfg_.hough_max_gap);
 
   // Draw detected Hough lines onto the raw image for visualization
   for (int i=0; i<line_segments.size(); i++){
