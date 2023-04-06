@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>gnss_ekf_example</name>
+  <version>0.0.0</version>
+  <description>
+    Example implementation of an extended Kalman filter for fusing wheel speed data with GNSS
+  </description>
+  <maintainer email="mtradovn@oakland.edu">Micho Radovnikovich</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>tf2_ros</depend>
+  <depend>dynamic_reconfigure</depend>
+</package>

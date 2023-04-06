@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="use_sim_time" value="true" />
+
+  <node pkg="gnss_ekf_example" type="gnss_ekf_example" name="gnss_ekf_example">
+    <param name="ref_lat" value="42.6794081" />
+    <param name="ref_lon" value="-83.1956015" />
+  </node>
+
+  <!-- Load Mantis URDF file and state publisher to automatically publish accurate base_footprint to laser TF frame-->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+  <param name="robot_description" command="$(find xacro)/xacro '$(find mantis_model)/urdf/mantis.urdf'" />
+
+  <node pkg="rviz" type="rviz" name="ekf_viz" args="-d $(find gnss_ekf_example)/rviz/rviz_config.rviz" />
+
+</launch>
