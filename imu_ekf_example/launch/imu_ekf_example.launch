@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="use_sim_time" value="true" />
+
+  <node pkg="imu_ekf_example" type="imu_ekf_example" name="imu_ekf_example" />
+
+  <node pkg="rviz" type="rviz" name="ekf_viz" args="-d $(find imu_ekf_example)/rviz/rviz_config.rviz" />
+
+</launch>
