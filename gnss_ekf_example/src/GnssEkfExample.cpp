@@ -86,16 +86,20 @@ namespace gnss_ekf_example {
     double sin_heading = sin(state(HEADING));
     double cos_heading = cos(state(HEADING));
     
-    // TODO: Populate state Jacobian with current state values
+    // Populate state Jacobian with current state values
     StateMatrix A;
-    A.setIdentity();
+    A.row(POS_X) << 1, 0, -dt * state(SPEED) * sin_heading, dt * cos_heading, 0;
+    A.row(POS_Y) << 0, 1, dt * state(SPEED) * cos_heading, dt * sin_heading, 0;
+    A.row(HEADING) << 0, 0, 1, 0, dt;
+    A.row(SPEED) << 0, 0, 0, 1, 0;
+    A.row(YAW_RATE) << 0, 0, 0, 0, 1;
     return A;
   }
 
   StateMatrix GnssEkfExample::covPrediction(const StateMatrix& A, const StateMatrix& Q, const StateMatrix& old_cov) {
-    // TODO: Propagate covariance matrix one step
+    // Propagate covariance matrix one step
     StateMatrix new_cov;
-    new_cov = old_cov;
+    new_cov = A * old_cov * A.transpose() + Q;
     return new_cov;
   }
 
@@ -117,31 +121,34 @@ namespace gnss_ekf_example {
     StateVector predicted_state = statePrediction(dt, X_);
     StateMatrix predicted_cov = covPrediction(A, Q_, P_);
 
-    // TODO: Construct C matrix for a GPS update (X and Y position measurements)
+    // Construct C matrix for a GPS update (X and Y position measurements)
     Eigen::Matrix<double, 2, 5> C;
-    C.setZero();
+    C.row(0) << 1, 0, 0, 0, 0;
+    C.row(1) << 0, 1, 0, 0, 0;
 
     // TODO: Compute expected measurement
     Eigen::Matrix<double, 2, 1> expected_meas;
-    expected_meas.setZero();
+    expected_meas << predicted_state(POS_X), predicted_state(POS_Y);
 
     // Put GPS measurements in an Eigen object
-    Eigen::Matrix<double, 2, 1> real_meas;
-    real_meas.setZero();
+    Eigen::Matrix<double, 2, 1> real_meas = position;
 
-    // TODO: Construct R matrix for the GPS measurements
+    // Construct R matrix for the GPS measurements
     Eigen::Matrix<double, 2, 2> R;
-    R.setZero();
+    R.row(0) << cfg_.r_gps * cfg_.r_gps, 0;
+    R.row(1) << 0, cfg_.r_gps * cfg_.r_gps;
 
-    // TODO: Compute Kalman gain
+    // Compute Kalman gain
     Eigen::Matrix<double, 2, 2> S;
+    S = C * predicted_cov * C.transpose() + R;
     Eigen::Matrix<double, 5, 2> K;
+    K = predicted_cov * C.transpose() * S.inverse();
 
-    // TODO: Update filter estimate based on difference between actual and expected measurements
-    X_ = predicted_state;
+    // Update filter estimate based on difference between actual and expected measurements
+    X_ = predicted_state + K * (real_meas - expected_meas);
     
-    // TODO: Update estimate error covariance using Kalman gain matrix
-    P_ = predicted_cov;
+    // Update estimate error covariance using Kalman gain matrix
+    P_ = (StateMatrix::Identity() - K * C) * predicted_cov;
 
     // Wrap heading estimate into the range -pi to pi
     if (X_(HEADING) > M_PI) {
@@ -169,31 +176,35 @@ namespace gnss_ekf_example {
     StateVector predicted_state = statePrediction(dt, X_);
     StateMatrix predicted_cov = covPrediction(A, Q_, P_);
 
-    // TODO: Construct C matrix for a twist update (speed and yaw rate measurement)
+    // Construct C matrix for a twist update (speed and yaw rate measurement)
     Eigen::Matrix<double, 2, 5> C;
-    C.setZero();
+    C.row(0) << 0, 0, 0, 1, 0;
+    C.row(1) << 0, 0, 0, 0, 1;
 
-    // TODO: Compute expected measurement
+    // Compute expected measurement
     Eigen::Matrix<double, 2, 1> expected_meas;
-    expected_meas << predicted_state(3), predicted_state(4);
+    expected_meas << predicted_state(SPEED), predicted_state(YAW_RATE);
 
     // TODO: Put twist measurements in an Eigen object
     Eigen::Matrix<double, 2, 1> real_meas;
-    real_meas.setZero();
+    real_meas << twist.linear.x, twist.angular.z;
 
     // TODO: Construct R matrix for the twist measurements
     Eigen::Matrix<double, 2, 2> R;
-    R.setZero();
+    R.row(0) << cfg_.r_speed * cfg_.r_speed, 0;
+    R.row(1) << 0, cfg_.r_speed * cfg_.r_speed;
 
-    // TODO: Compute Kalman gain
+    // Compute Kalman gain
     Eigen::Matrix<double, 2, 2> S;
+    S = C * predicted_cov * C.transpose() + R;
     Eigen::Matrix<double, 5, 2> K;
+    K = predicted_cov * C.transpose() * S.inverse();
 
-    // TODO: Update filter estimate based on difference between actual and expected measurements
-    X_ = predicted_state;
+    // Update filter estimate based on difference between actual and expected measurements
+    X_ = predicted_state + K * (real_meas - expected_meas);
     
-    // TODO: Update estimate error covariance using Kalman gain matrix
-    P_ = predicted_cov;
+    // Update estimate error covariance using Kalman gain matrix
+    P_ = (StateMatrix::Identity() - K * C) * predicted_cov;
 
     // Wrap heading estimate into the range -pi to pi
     if (X_(HEADING) > M_PI) {
